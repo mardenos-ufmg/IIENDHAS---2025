@@ -144,37 +144,89 @@ plot_boxplot(dados2021, var = "score médio su", group = "tipo de serviço")
 ```
 
 ## Histogramas / Densidade
-```{r}
-plot_hist(dados2016, var = "IN023")
-```
 
-```{r}
-## Gráficos variáveis
-plot_histograma(dados2016, var = "IN023")
-
-## Gráficos variáveis
+# Universalidade
 ```{r}
 #IN023 = Índice de atendimento urbano de água
-plot_histograma(dados2021, var = "IN023")
+
+plot_hist(dados2016, var = "IN023")
+
+plot_hist(dados2021, var = "IN023")
 ```
+
 
 ```{r}
 #IN055 	Índice de atendimento total de água
-plot_histograma(dados2016, var = "IN055")
-```
 
+plot_hist(dados2016, var = "IN055")
+plot_hist(dados2021, var = "IN055")
 
-```{r}
-plot_density(dados2016, var = "IN055")
 ```
 
 ```{r}
-plot_histograma(dados2021, var = "IN055")
+#IN015	Índice de coleta de esgoto
+
+plot_hist(dados2016, var = "IN015")
+plot_hist(dados2021, var = "IN015")
 ```
 
+```{r}
+#IN016	Índice de tratamento de esgoto
+
+
+plot_hist(dados2016, var = "IN016")
+plot_hist(dados2021, var = "IN016")
+```
 
 ```{r}
-plot_density(dados2021, var = "IN055")
+# IN056	Índice de atendimento total de esgoto referido aos municípios atendidos com água
+
+plot_hist(dados2016, var = "IN056")
+plot_hist(dados2021, var = "IN056")
+```
+
+```{r}
+#IN076	Incidência das análises de turbidez fora do padrão
+
+plot_hist(dados2016, var = "IN076")
+plot_hist(dados2021, var = "IN076")
+```
+
+# Sustentabilidade
+
+```{r}
+#IN013	Índice de perdas faturamento
+
+plot_hist(dados2016, var = "IN013")
+plot_hist(dados2021, var = "IN013")
+```
+
+```{r}
+#IN049	Índice de perdas na distribuição
+
+plot_hist(dados2016, var = "IN049")
+plot_hist(dados2021, var = "IN049")
+```
+
+```{r}
+#IN002	Índice de produtividade: economias ativas por pessoal próprio
+
+plot_hist(dados2016, var = "IN002")
+plot_hist(dados2021, var = "IN002")
+```
+
+```{r}
+#IN003	Despesa total com os serviços por m3 faturado
+
+plot_hist(dados2016, var = "IN003")
+plot_hist(dados2021, var = "IN003")
+```
+
+```{r}
+#IN101	Índice de suficiência de caixa
+
+plot_hist(dados2016, var = "IN101")
+plot_hist(dados2021, var = "IN101")
 ```
 
 ```{r}
@@ -197,6 +249,27 @@ ggplot(dados_comparados, aes(x = POP, fill = Ano)) +
   scale_x_continuous(labels = scales::label_number(big.mark = ".", decimal.mark = ",")) +
   theme_minimal()
 
+
+```
+
+## Comparação dos Scores
+
+```{r}
+top10_univ <- df %>%
+  arrange(desc(`score universalidade`)) %>%
+  mutate(rank_univ = row_number()) %>%
+  slice(1:10) %>%
+  select(município, rank_univ, `score universalidade`)
+
+top10_sust <- df %>%
+  arrange(desc(`score sustentabilidade`)) %>%
+  mutate(rank_sust = row_number()) %>%
+  slice(1:10) %>%
+  select(município, rank_sust, `score sustentabilidade`)
+
+ranking_unidos <- full_join(top10_univ, top10_sust, by = "município")
+
+ranking_unidos
 
 ```
 
