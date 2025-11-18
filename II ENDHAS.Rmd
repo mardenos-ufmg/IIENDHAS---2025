@@ -143,13 +143,16 @@ plot_boxplot(dados2021, var = "score médio su", group = "tipo de serviço")
 
 ```
 
+## Histogramas / Densidade
 ```{r}
+plot_hist(dados2016, var = "IN023")
+```
 
+```{r}
 ## Gráficos variáveis
 plot_histograma(dados2016, var = "IN023")
 
 ## Gráficos variáveis
-
 ```{r}
 #IN023 = Índice de atendimento urbano de água
 plot_histograma(dados2021, var = "IN023")
