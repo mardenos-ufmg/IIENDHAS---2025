@@ -7,6 +7,7 @@ date: "2025-11-12"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ```{r}
 library(snis)
 ```
@@ -255,22 +256,36 @@ ggplot(dados_comparados, aes(x = POP, fill = Ano)) +
 ## Comparação dos Scores
 
 ```{r}
-top10_univ <- df %>%
+top10_universalidade <- dados2016 %>%
   arrange(desc(`score universalidade`)) %>%
-  mutate(rank_univ = row_number()) %>%
-  slice(1:10) %>%
-  select(município, rank_univ, `score universalidade`)
+  slice(1:10)
 
-top10_sust <- df %>%
+top10_universalidade %>% 
+  select(município, `score universalidade`, prestador)
+
+top10_sustentabilidade <- dados2016 %>%
   arrange(desc(`score sustentabilidade`)) %>%
-  mutate(rank_sust = row_number()) %>%
-  slice(1:10) %>%
-  select(município, rank_sust, `score sustentabilidade`)
+  slice(1:10)
 
-ranking_unidos <- full_join(top10_univ, top10_sust, by = "município")
+top10_universalidade %>% 
+  select(município, `score sustentabilidade`, prestador)
 
-ranking_unidos
+```
 
+```{r}
+top10_universalidade <- dados2021 %>%
+  arrange(desc(`score universalidade`)) %>%
+  slice(1:10)
+
+top10_universalidade %>% 
+  select(município, `score universalidade`, prestador)
+
+top10_sustentabilidade <- dados2021 %>%
+  arrange(desc(`score sustentabilidade`)) %>%
+  slice(1:10)
+
+top10_universalidade %>% 
+  select(município, `score sustentabilidade`, prestador)
 ```
 
 ##Tabelas Completas
