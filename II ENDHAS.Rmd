@@ -27,19 +27,36 @@ dados2016 =
   filter(`código do município` %in% alago$Codmun)
 ```
 
-```{r pressure, echo=FALSE}
-dados2016 |>
-  mutate(
-    manter =
-      case_when(
-        !duplicated(`código do município`) ~ TRUE,
-        duplicated(`código do município`) & (`tipo de serviço` == "Água") ~ TRUE,
-        duplicated(`código do município`) & (`tipo de serviço` != "Água") ~ FALSE
-      )
-  ) |>
-  filter(manter) |>
-  select(-manter)
+```{r}
+dados2016 =
+  processar_dados(2016) |>
+  filter(`tipo de serviço` != "Esgoto")
+fa = fa(dados2016, "su")
+dados2016 = update_df_fa(dados2016, fa) |>
+  filter(`código do município` %in% alago$Codmun)
 ```
+
+```{r}
+dados2021 =
+  processar_dados(2021) |>
+  filter(`tipo de serviço` != "Esgoto")
+fa = fa(dados2021, "su")
+dados2021 = update_df_fa(dados2021, fa) |>
+  filter(`código do município` %in% alago$Codmun)
+```
+
+
+```{r}
+municipios =
+  intersect(
+    dados2016$`código do município`,
+    dados2021$`código do município`
+  )
+
+dados2016 = dados2016 |> filter(`código do município` %in% municipios)
+dados2021 = dados2021 |> filter(`código do município` %in% municipios)
+```
+
 
 ```{r}
 df = 
@@ -72,6 +89,8 @@ df =
   df |>
   left_join(ibge, by = "código do município")
 ```
+!!!!Excluir municípios que não estão nos dois anos!!!!!!
+
 ## Mapas interativos
 ```{r}
 mapa_interativo(dados2016, var = "score médio su", titulo = "Mapa SU 2016",  quart = FALSE)
@@ -121,28 +140,7 @@ plot_boxplot(dados2021, var = "score médio su", group = "prestador2")
   A Copasa mostra uma melhora bem clara entre 2016 e 2021. Ela aparece com valores mais baixos e caixa mais compacta em 2016, com apnas um outlier, mas em 2021 sua mediana sobe e sua distribuição fica mais ampla, com valores desde bem baixos até altos (0,4 a 0,9). Ou seja, há grande heterogeneidade entre municípios atendidos pela Copasa em 2021, alguns com scores médios muito bons e outros muito ruins.
   Por outros lado, as Empresas Privadas que apresentam apenas uma "linha" em ambos os anos, apresenta um comportamento estável que pode ser simplesmente o reflexo de apenas uma amostra em ambos os anos.
 Por fim, a Prefeitura apresenta um comportamento relativamente estável entre 2016 e 2021, com medianas semelhantes nos dois anos. No entanto, como o número de municípios atendidos pela Prefeitura caiu de 13 em 2016 para apenas 2 em 2021, a variabilidade observada no boxplot diminui naturalmente.
-    
-#2016
-```{r}
-table(dados2016$`tipo de serviço`)
-plot_boxplot(dados2016, var = "score médio su", group = "tipo de serviço")
-```
-#2021
-```{r}
-table(dados2021$`tipo de serviço`)
-plot_boxplot(dados2021, var = "score médio su", group = "tipo de serviço")
-```
-  O serviço de Água teve um avanço claro e significativo. Antes era o pior grupo, com desempenho baixo e pouco variável. Em 2021, tem um aumento na mediana, na variabilidade tendo municípios de desempenho baixo a alto. 
-  O serviço de Água e Esgoto se torna o melhor em 2021 com ainda mais disparidads. Por fim, sobre o Esgoto houve a extinsão do grupo, logo não é possível comparar diretamente.
 
-```{r}
-#plot_median_barplot(dados2016, score_cols = "score médio su", group_cols = "natureza jurídica", titulo = "Score por Natureza Jurídica 2016")
-```
-```{r}
-#plot_hist_score(dados2016, group_col = "IN023", titulo = "Densidade IN023 2016")
-#plot_density_score(dados2016, group_col = "IN023", titulo = "Densidade IN023 2016")
-
-```
 
 ## Histogramas / Densidade
 
@@ -228,29 +226,6 @@ plot_hist(dados2021, var = "IN003")
 
 plot_hist(dados2016, var = "IN101")
 plot_hist(dados2021, var = "IN101")
-```
-
-```{r}
-dados_comparados <- bind_rows(
-  dados2016 %>%
-    select(POP = POP_URB) %>%
-    mutate(Ano = "2016"),
-  dados2021 %>%
-    select(POP = POP_URB) %>%
-    mutate(Ano = "2021")
-)
-
-ggplot(dados_comparados, aes(x = POP, fill = Ano)) +
-  geom_density(alpha = 0.5) +
-  labs(
-    title = "Densidade da População Urbana — 2016 vs 2021",
-    x = "População Urbana",
-    y = "Densidade"
-  ) +
-  scale_x_continuous(labels = scales::label_number(big.mark = ".", decimal.mark = ",")) +
-  theme_minimal()
-
-
 ```
 
 ## Comparação dos Scores
