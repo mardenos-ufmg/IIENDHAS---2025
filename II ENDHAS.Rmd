@@ -13,7 +13,6 @@ library(snis)
 ```
 
 ```{r cars}
-
 alago = 
   system.file("alago", "MUNICIPIOS DE ESTUDO.xlsx", package = "snis") |>
   readxl::read_xlsx()
@@ -89,20 +88,41 @@ df =
   df |>
   left_join(ibge, by = "código do município")
 ```
-!!!!Excluir municípios que não estão nos dois anos!!!!!!
+
+A análise descritiva foi conduzida utilizando os dados do SNIS referentes aos 52 municípios pertencentes à Bacia Hidrográfica de Furnas, nos anos de 2016 e 2021. Para garantir comparabilidade e foco no abastecimento de água, foram incluídos apenas municípios que possuem serviço de abastecimento de água ou de abastecimento de água associado ao esgotamento sanitário, uma vez que o objetivo central da análise é caracterizar o acesso e as condições de prestação dos serviços de água na região.
+
+O estudo contempla duas dimensões centrais, a Universalidade (dimensão social) e a Sustentabilidade (dimensão econômica). 
+A Universalidade se refere ao alcance do atendimento à população, tanto por soluções coletivas quanto individuais. Envolve avaliar: quanto do território municipal é coberto por redes de abastecimento, a proporção da população atendida, as perdas e a continuidade de prestação, a qualidade da água distribuída e indicadores de acesso urbano e total. Essa dimensão busca corresponder à pergunta: “O serviço chega a todos de forma adequada?”
+Já a Sustentabilidade busca identificar condicionantes da eficiência e capacidade econômico-financeira do prestador, considerando produtividade operacional, relação entre custos, tarifas e receita, suficiência de caixa, perdas na distribuição, consumo energético, despesas operacionais. Aqui a pergunta central é: “O serviço é economicamente consistente para se manter e expandir?”
+
+A análise descritiva tem como objetivo caracterizar o cenário dos serviços de abastecimento de água e esgotamento sanitário nos municípios da Bacia de Furnas, comparar desempenho social e econômico por meio dos scores de Universalidade e Sustentabilidade, Avaliar padrões, desigualdades e tendências, identificando municípios com melhor e pior desempenho,e comparar diferentes periodos para analisar a evolução ao longo do tempo.
+
+  O ano de 2021 foi o ano escolhido pois é o ano mais recente cujo o snis esta completo e apto para analise, 2016 foi escolhido para ter um gap interessante entre os diferentes anos.
 
 ## Mapas interativos
 ```{r}
-mapa_interativo(dados2016, var = "score médio su", titulo = "Mapa SU 2016",  quart = FALSE)
+mapa_interativo(dados2016, var = "score médio su", titulo = "Mapa de 2016",  quart = FALSE)
 ```
 
 ```{r}
-mapa_interativo(dados2021, var = "score médio su", titulo = "Mapa SU 2021", quart = FALSE)
+mapa_interativo(dados2021, var = "score médio su", titulo = "Mapa de 2021", quart = FALSE)
 ```
 
 ```{r}
-mapa_interativo(df, var = "su_dif", titulo = "Mapa SU Diferenças", quart = FALSE)
+mapa_interativo(df, var = "su_dif", titulo = "Mapa das Diferenças", quart = FALSE)
 ```
+
+As FIGURAS 1 e 2 apresentam os mapas dos scores médios (Sustentabilidade + Universalidade) para os anos de 2016 e 2021, respectivamente, com escala de cores que varia do vermelho (piores resultados) ao azul (melhores resultados). A comparação visual entre ambos revela alterações importantes na distribuição espacial do desempenho entre os municípios, as quais serão detalhadas com o apoio das tabelas e sintetizadas no Mapa das Diferenças (FIGURA 3).
+
+A FIGURA 3 mostra a variação do score médio entre 2016 e 2021 para os 52 municípios da Bacia de Furnas. Assim como nos mapas anteriores, a escala de cores vai do vermelho ao azul, onde tons vermelhos indicam piora do desempenho (diferença negativa) e tons azulados representam melhora (diferença positiva).
+
+De modo geral, observa-se que a evolução dos municípios foi relativamente homogênea, com a maior parte das variações concentrada entre –0,10 e +0,10. Apenas poucos municípios apresentam ganhos ou perdas mais expressivos, o que sugere que, apesar das diferenças encontradas, o padrão regional não passou por transformações profundas no período. Ainda assim, mesmo variações pequenas podem refletir diferenças estruturais entre prestadores, dinâmicas regionais específicas e condições locais de operação que influenciam o desempenho dos serviços de saneamento.
+
+O mapa evidencia alguns núcleos de melhora, como Monte Belo (+0,359), Divisa Nova (+0,197) e Guapé (+0,186). Em contraste, outros municípios apresentam quedas perceptíveis, como Nepomuceno (–0,214), Coqueiral (–0,199) e São João Batista do Glória (–0,107). Um aspecto relevante é que todos esses municípios, tanto os que melhoraram quanto os que pioraram, pertencem à Região Intermediária de Varginha, o que pode sugerir algum padrão regional comum. Contudo, esse resultado deve ser interpretado com cautela, já que 41 dos 52 municípios estudados pertencem a essa mesma região, o que naturalmente concentra tanto os maiores avanços quanto as maiores quedas.
+
+Por fim, essas evidências reforçam a necessidade de análises complementares, especialmente por tipo de prestador, por dimensão (Universalidade e Sustentabilidade) e por indicadores específicos disponíveis na base.
+
+
 ## Tabelas
 ```{r}
 table_top_bottom(dados2016, top_n = 10, bottom_n = 10)
@@ -111,40 +131,87 @@ table_top_bottom(dados2016, top_n = 10, bottom_n = 10)
 ```{r}
 table_top_bottom(dados2021, top_n = 10, bottom_n = 10)
 ```
-  A análise das tabelas com os 10 melhores municípios de 2016 e 2021 revela que seis deles aparecem em ambas as listas: Varginha, Campo Belo, Lavras, Alfenas, Guaxupé e Formiga. Isso indica a existência de um núcleo de municípios com desempenho consistentemente elevado ao longo do tempo, embora ainda haja mobilidade entre as posições do ranking. Entre os destaques positivos, Varginha evoluiu do 5º lugar em 2016 para liderar o ranking em 2021, enquanto Lavras, Alfenas e Campo Belo também apresentaram crescimento em seus Scores Médios.
+  Em 2016 a tabela com os 10 melhores municipios (FIGURA 4), o topo do ranking é dominado por municípios atendidos por autarquias (Campo Belo, Nepomuceno, Machado, Três Pontas, Formiga), que apresentam desempenho consistente tanto em Sustentabilidade quanto em Universalidade, apesar disso Municípios atendidos por sociedades de economia mista também aparecem bem posicionados (Varginha, Alfenas, Lavras). Alguns destaques são Campo Belo (0.943) lidera, com pontuações quase simétricas entre as dimensões, Nepomuceno (0.928) aparece fortemente em 2016, apesar de cair significativamente até 2021 (como visto no mapa de diferenças). 
+  Em 2021 (FIGURA 6),Muitos dos municípios que já estavam entre os melhores em 2016 continuam no topo em 2021, indicando serviços sólidos e bem estruturados. Varginha (0.909) assume a liderança,Campo Belo (0.885) permanece entre os melhores e Lavras, Alfenas e Guaxupé também mantêm posições de destaque. Além disso, As sociedades de economia mista tendem a apresentar pontuações mais equilibradas entre as dimensões e as autarquias se destacam especialmente em Universalidade (vários com >0.95), mostrando maior abrangência no atendimento.
+        Agora, Os 10 piores scores de 2016 (FIGURA 5) concentram-se exclusivamente em municípios atendidos por sociedades de economia mista, com baixos valores sobretudo em Universalidade, 
+Juruaia (0.293) e Nova Resende (0.326) apresentam scores muito baixos, puxados por universalidade reduzida.Outras cidades como Alterosa, Monte Belo, Conceição da Aparecida mostram dificuldades tanto na dimensão econômica quanto no alcance do serviço. 
+  Ainda em 2021, (FIGURA 7) vários municípios COMO, Alterosa, Poço Fundo, Candeias, Conceição da Aparecida, Campestre continuam entre os piores nos dois anos mostrando ausência de evolução significativa. A grande exceção é Aguanil, cujo score baixo é causado por Sustentabilidade extremamente reduzida (0.014), apesar de ter Universalidade alta (0.785). Isso indica forte fragilidade econômica e de financiamento do serviço. A maioria dos piores permanece sendo de prestadores classificados como sociedade de economia mista. 
+  
+  Há indícios de que o modelo de gestão pode influenciar o resultado, afinal os melhores desempenhos foram de Autarquias com excelente performance em Universalidade e Sociedades de economia mista com equilíbrio estável entre as dimensões.
 
-  Por outro lado, alguns municípios tiveram quedas expressivas: Campo Gerais, que ocupava a primeira posição em 2016, não aparece mais entre os melhores e caiu para a 48ª colocação em 2021, com Score Médio de 0.416. Outros municípios como Cristais, Nepomuceno e Alterosa também deixaram o grupo dos melhores; este último, inclusive, apresenta uma queda marcante, passando de destaque positivo em 2016 para um dos piores em 2021, com Score de 0.360.
+E os piores desempenhos tem Predominância quase absoluta de Sociedades de economia mista, especialmente aquelas com baixa Universalidade.
+Entretanto, o fato de os extremos (melhores e piores) serem dominados sempre pelos mesmos tipos de prestador não é suficiente para conclusões causais, mas indica a necessidade de uma análise específica por modelo de gestão 
+  
+```{r}
 
-!!! Campos Gerais aparece 2 vezes em um ano!!!
+top10_universalidade <- dados2021 %>%
+  arrange(desc(`score universalidade`)) %>% 
+  slice(1:10) 
 
-  Quanto à Natureza Jurídica, observa-se uma mudança relevante. Em 2016, três dos melhores municípios eram administrados diretamente pelo poder público, enquanto em 2021 esse número caiu para zero. Ao mesmo tempo, houve um aumento da presença de Autarquias e Sociedades de Economia Mista com Administração Pública entre os melhores.
+print("--- Top 10 por Score de Universalidade ---")
+top10_universalidade %>%
+  select(município, `score universalidade`, prestador2)
 
-  Na análise dos piores colocados, nota-se uma forte persistência: oito dos dez municípios que estavam entre os piores em 2016 permanecem no grupo em 2021. Embora alguns tenham apresentado melhora, como Campestre, Juruaia e Conceição da Aparecida, o avanço não foi suficiente para que saíssem das últimas posições. Além disso, a Natureza Jurídica reforça o padrão observado: a maioria dos municípios com pior desempenho é organizada como Sociedade de Economia Mista com Administração Pública tanto em 2016, quanto em 2021.
-    
-## Gráficos score
 
-#2016
+top10_sustentabilidade <- dados2021%>%
+  arrange(desc(`score sustentabilidade`)) %>% 
+  slice(1:10) 
+
+print("--- Top 10 por Score de Sustentabilidade ---")
+top10_sustentabilidade %>%
+  select(município, `score sustentabilidade`, prestador2)
+```
+Para analisar separadamente o efeito de cada uma das dimensões, o ranking com os 10 melhores municípios em 2021 foi construído individualmente para Sustentabilidade e Universalidade.
+
+Nos resultados de Universalidade, observa-se um padrão bastante homogêneo: as autarquias dominam amplamente o topo do ranking, todas apresentando valores superiores a 0,93. Apenas Varginha e Guaxupé, atendidas pela COPASA, aparecem entre os dez melhores, também com níveis elevados de atendimento.
+
+Já no ranking de Sustentabilidade, o cenário se inverte. A liderança passa a ser fortemente associada à COPASA, que ocupa sete das dez primeiras posições. A presença de apenas duas autarquias entre os melhores indica que o desempenho econômico e operacional tende a ser mais robusto nos municípios atendidos pela companhia estadual.
+
+De forma geral, Universalidade apresenta menor variação entre os melhores — quase todos muito próximos de 1 — enquanto Sustentabilidade é a dimensão que mais diferencia os municípios, por refletir custos, produtividade e eficiência operacional.
+
+Além disso, ao comparar esses rankings individuais com o ranking do score médio geral, nota-se que 5 dos 10 melhores municípios em Sustentabilidade também aparecem entre os melhores no score médio. Para Universalidade, esse número é ainda maior, com 6 dos 10 municípios figurando no ranking geral.
+
+Por fim, apenas duas cidades aparecem em comum nos três rankings — Campo Belo e Varginha — justamente aquelas que ocupam as melhores posições no ranking geral, reforçando sua consistência de desempenho nas diferentes dimensões avaliadas.
+
+# Boxplots
+
 ```{r}
 table(dados2016$prestador2)
 
-plot_boxplot(dados2016, var = "score médio su", group = "prestador2")
+plot_boxplot(dados2016, var = "score médio su", group = "prestador2", titulo = "Score Médio por Tipo de Prestador 2016")
 ```
-#2021
 ```{r}
 table(dados2021$prestador2)
 
-plot_boxplot(dados2021, var = "score médio su", group = "prestador2")
+plot_boxplot(dados2021, var = "score médio su", group = "prestador2", titulo = "Score Médio por Tipo de Prestador 2021")
 ```
+A análise dos boxplots do score médio por tipo de prestador mostra padrões distintos entre 2016 e 2021, tanto na posição das medianas quanto na dispersão das distribuições.
 
-  Sobre os tipos de prestadores é importante destacar que a Autarquia se mantém como o prestador com melhor desempenho nos dois anos, em 2016 ela já apresentava as maiores medianas e, mesmo com uma leve queda em 2021, continua liderando.
-  A Copasa mostra uma melhora bem clara entre 2016 e 2021. Ela aparece com valores mais baixos e caixa mais compacta em 2016, com apnas um outlier, mas em 2021 sua mediana sobe e sua distribuição fica mais ampla, com valores desde bem baixos até altos (0,4 a 0,9). Ou seja, há grande heterogeneidade entre municípios atendidos pela Copasa em 2021, alguns com scores médios muito bons e outros muito ruins.
-  Por outros lado, as Empresas Privadas que apresentam apenas uma "linha" em ambos os anos, apresenta um comportamento estável que pode ser simplesmente o reflexo de apenas uma amostra em ambos os anos.
-Por fim, a Prefeitura apresenta um comportamento relativamente estável entre 2016 e 2021, com medianas semelhantes nos dois anos. No entanto, como o número de municípios atendidos pela Prefeitura caiu de 13 em 2016 para apenas 2 em 2021, a variabilidade observada no boxplot diminui naturalmente.
+As Autarquias se mantêm como o prestador com melhor desempenho nos dois anos analisados. Em 2016, apresentavam a maior mediana (pouco acima de 0,7) e uma variabilidade moderada. Em 2021, ocorre uma leve redução da mediana para cerca de 0,65, mas o grupo continua ocupando o melhor desempenho geral. A consistência é reforçada pelo tamanho estável da amostra (13 municípios em ambos os anos).
 
+A COPASA apresenta uma pequena elevação na mediana, passando de aproximadamente 0,50 em 2016 para cerca de 0,55 em 2021. Entretanto, sua distribuição se torna significativamente mais ampla, indicando forte heterogeneidade: alguns municípios atingem valores elevados enquanto outros permanecem muito baixos. Essa maior dispersão é compatível com o número elevado de municípios atendidos (35 em cada ano).
 
-## Histogramas / Densidade
+Por fim, Empresa Privada e Prefeitura aparecem com apenas um município cada por ano, o que resulta em valores estáveis e representados por linhas nos boxplots. Entre eles, o município atendido pela Prefeitura apresenta a pior mediana em ambos os anos, embora a interpretação seja limitada pelo tamanho mínimo da amostra.
 
-# Universalidade
+```{r}
+plot_boxplot(dados2021, var = "score sustentabilidade", group = "prestador2", titulo = "Score Sustentabilidade por Tipo de Prestador 2021")
+```
+```{r}
+plot_boxplot(dados2021, var = "score universalidade", group = "prestador2", titulo = "Score Universalidade por Tipo de Prestador 2021")
+```
+A separação entre Sustentabilidade e Universalidade revela padrões completamente distintos entre os prestadores, reforçando que a dimensão econômica e a dimensão social do saneamento não se comportam da mesma forma.
+
+Na dimensão Sustentabilidade (econômica e operacional), em 2021, a COPASA apresenta o melhor desempenho, com mediana próxima de 0,60, a mais alta entre os prestadores, além de uma caixa relativamente curta, indicando resultados mais homogêneos. Na sequência aparecem as Autarquias, com mediana em torno de 0,38, seguidas pela Empresa Privada, com mediana próxima de 0,25, e pela Prefeitura, com desempenho bastante reduzido, próximo de zero. Esse padrão sugere que a COPASA, como prestador estadual, possui maior robustez financeira e operacional, enquanto a gestão municipal direta tende a apresentar resultados inferiores.
+
+No âmbito da Universalidade (dimensão social e cobertura dos serviços), o cenário se inverte completamente. As Autarquias apresentam o melhor desempenho de forma destacada, com mediana praticamente igual a 1, indicando cobertura quase universal e baixa variabilidade. Em seguida aparece a Empresa Privada, com mediana em torno de 0,87, e a Prefeitura, com valor próximo de 0,75. Já a COPASA apresenta a pior mediana entre os grupos (entre 0,38 e 0,50) e uma caixa bastante longa, evidenciando grande desigualdade entre os municípios atendidos.
+
+Esses resultados mostram que os prestadores com melhor desempenho social não são os mesmos que apresentam melhor desempenho econômico: Autarquias lideram em universalização, enquanto a COPASA lidera em eficiência operacional.
+
+Por fim, é importante ressaltar que Prefeitura e Empresa Privada aparecem representadas por apenas um município cada, o que limita a interpretação estatística desses dois grupos.
+
+# Histogramas / Densidade
+
+## Universalidade
 ```{r}
 #IN023 = Índice de atendimento urbano de água
 
@@ -169,49 +236,12 @@ plot_hist(dados2016, var = "IN015")
 plot_hist(dados2021, var = "IN015")
 ```
 
-```{r}
-#IN016	Índice de tratamento de esgoto
-
-
-plot_hist(dados2016, var = "IN016")
-plot_hist(dados2021, var = "IN016")
-```
+## Sustentabilidade
 
 ```{r}
-# IN056	Índice de atendimento total de esgoto referido aos municípios atendidos com água
-
-plot_hist(dados2016, var = "IN056")
-plot_hist(dados2021, var = "IN056")
-```
-
-```{r}
-#IN076	Incidência das análises de turbidez fora do padrão
-
-plot_hist(dados2016, var = "IN076")
-plot_hist(dados2021, var = "IN076")
-```
-
-# Sustentabilidade
-
-```{r}
-#IN013	Índice de perdas faturamento
-
-plot_hist(dados2016, var = "IN013")
-plot_hist(dados2021, var = "IN013")
-```
-
-```{r}
-#IN049	Índice de perdas na distribuição
-
-plot_hist(dados2016, var = "IN049")
-plot_hist(dados2021, var = "IN049")
-```
-
-```{r}
-#IN002	Índice de produtividade: economias ativas por pessoal próprio
-
-plot_hist(dados2016, var = "IN002")
-plot_hist(dados2021, var = "IN002")
+#IN046 – Tratamento de esgoto relativo à água consumida
+plot_hist(dados2016, var = "IN046")
+plot_hist(dados2021, var = "IN046")
 ```
 
 ```{r}
@@ -227,50 +257,25 @@ plot_hist(dados2021, var = "IN003")
 plot_hist(dados2016, var = "IN101")
 plot_hist(dados2021, var = "IN101")
 ```
+# Conclusão
+A análise dos 52 municípios da Bacia de Furnas revela um cenário de avanços discretos entre 2016 e 2021, sem mudanças estruturais profundas no desempenho médio dos serviços de saneamento. Embora a maioria dos municípios tenha apresentado variações pequenas, alguns casos se destacam tanto por melhorias quanto por quedas, evidenciando desigualdades internas na região.
 
-## Comparação dos Scores
+Os resultados mostram que o desempenho está fortemente associado ao modelo de gestão. Autarquias e Sociedades de Economia Mista concentram os melhores resultados no score geral, enquanto os piores desempenhos permanecem majoritariamente entre prestadores estaduais com baixa universalidade. Essa constância nos extremos reforça a ideia de que a organização institucional exerce papel central na qualidade dos serviços.
 
-```{r}
-top10_universalidade <- dados2016 %>%
-  arrange(desc(`score universalidade`)) %>%
-  slice(1:10)
+As análises separadas das dimensões confirmam essa divisão:
 
-top10_universalidade %>% 
-  select(município, `score universalidade`, prestador)
+Autarquias lideram amplamente em Universalidade, indicando maior capacidade de garantir acesso e cobertura — dimensão diretamente vinculada ao direito social ao saneamento.
 
-top10_sustentabilidade <- dados2016 %>%
-  arrange(desc(`score sustentabilidade`)) %>%
-  slice(1:10)
+A COPASA se destaca em Sustentabilidade, sugerindo maior robustez financeira e operacional, ainda que não necessariamente traduzida em acesso.
 
-top10_universalidade %>% 
-  select(município, `score sustentabilidade`, prestador)
+Assim, os resultados mostram que eficiência econômica e alcance social não caminham, necessariamente, juntos. Esse contraste evidencia que políticas públicas focadas apenas na eficiência podem não reduzir desigualdades, enquanto modelos mais próximos da gestão local tendem a priorizar a universalização. A combinação dessas dimensões, econômica e social, é essencial para garantir serviços mais equilibrados e inclusivos na região.
 
-```
 
-```{r}
-top10_universalidade <- dados2021 %>%
-  arrange(desc(`score universalidade`)) %>%
-  slice(1:10)
+#Tabelas Completas
 
-top10_universalidade %>% 
-  select(município, `score universalidade`, prestador)
-
-top10_sustentabilidade <- dados2021 %>%
-  arrange(desc(`score sustentabilidade`)) %>%
-  slice(1:10)
-
-top10_universalidade %>% 
-  select(município, `score sustentabilidade`, prestador)
-```
-
-##Tabelas Completas
-
-#2016
 ```{r}
 table_top_bottom(dados2016, top_n = 52, bottom_n = 0)
 ```
-
-#2021
 ```{r}
 table_top_bottom(dados2021, top_n = 52, bottom_n = 0)
 ```
