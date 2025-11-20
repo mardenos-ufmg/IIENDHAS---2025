@@ -1,0 +1,65 @@
+---
+title: "Mapas SU"
+output: html_document
+date: "2025-11-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(snis)
+```
+
+```{r cars}
+alago = 
+  system.file("alago", "MUNICIPIOS DE ESTUDO.xlsx", package = "snis") |>
+  readxl::read_xlsx()
+
+dados2021 =
+  dados_snis$"2021"$df |>
+  filter(`código do município` %in% alago$Codmun)
+  
+dados2016 =
+  dados_snis$"2016"$df |>
+  filter(`código do município` %in% alago$Codmun)
+```
+
+```{r}
+dados2016 =
+  processar_dados(2016) |>
+  filter(`tipo de serviço` != "Esgoto")
+fa = fa(dados2016, "su")
+dados2016 = update_df_fa(dados2016, fa) |>
+  filter(`código do município` %in% alago$Codmun)
+```
+
+```{r}
+dados2021 =
+  processar_dados(2021) |>
+  filter(`tipo de serviço` != "Esgoto")
+fa = fa(dados2021, "su")
+dados2021 = update_df_fa(dados2021, fa) |>
+  filter(`código do município` %in% alago$Codmun)
+```
+
+
+```{r}
+municipios =
+  intersect(
+    dados2016$`código do município`,
+    dados2021$`código do município`
+  )
+
+dados2016 = dados2016 |> filter(`código do município` %in% municipios)
+dados2021 = dados2021 |> filter(`código do município` %in% municipios)
+```
+
+```{r}
+mapa_interativo(dados2021, var = "score sustentabilidade", titulo = "Mapa Sustentabilidade 2021", quart = FALSE)
+```
+```{r}
+mapa_interativo(dados2021, var = "score universalidade", titulo = "Mapa Universalidade 2021", quart = FALSE)
+```
+
