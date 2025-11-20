@@ -178,6 +178,37 @@ Por fim, apenas duas cidades aparecem em comum nos três rankings — Campo Belo
 # Boxplots
 
 ```{r}
+dadosJ <- bind_rows(dados2016, dados2021)
+
+dadosJ <- dadosJ %>%
+  mutate(`ano de referência` = factor(
+    as.character(`ano de referência`),
+    levels = c("2016", "2021")
+  ))
+
+dadosJ2 <- dadosJ %>% 
+  filter(prestador2 %in% c("Autarquia", "COPASA"))
+
+ggplot(dadosJ2, aes(
+  x = prestador2,
+  y = `score médio su`,
+  fill = `ano de referência`
+)) +
+  geom_boxplot() +
+  scale_fill_manual(
+    values = c("2016" = "lightblue", "2021" = "orange")
+  ) +
+  labs(
+    x = "Prestador",
+    y = "Score Médio",
+    fill = "Ano",
+    title = "Distribuição do Score Médio por Prestador (2016 vs 2021)"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+```{r}
 table(dados2016$prestador2)
 
 plot_boxplot(dados2016, var = "score médio su", group = "prestador2", titulo = "Score Médio por Tipo de Prestador 2016")
@@ -194,6 +225,43 @@ As Autarquias se mantêm como o prestador com melhor desempenho nos dois anos an
 A COPASA apresenta uma pequena elevação na mediana, passando de aproximadamente 0,50 em 2016 para cerca de 0,55 em 2021. Entretanto, sua distribuição se torna significativamente mais ampla, indicando forte heterogeneidade: alguns municípios atingem valores elevados enquanto outros permanecem muito baixos. Essa maior dispersão é compatível com o número elevado de municípios atendidos (35 em cada ano).
 
 Por fim, Empresa Privada e Prefeitura aparecem com apenas um município cada por ano, o que resulta em valores estáveis e representados por linhas nos boxplots. Entre eles, o município atendido pela Prefeitura apresenta a pior mediana em ambos os anos, embora a interpretação seja limitada pelo tamanho mínimo da amostra.
+
+```{r}
+dados21 <- dados2021 %>% 
+  filter(prestador2 %in% c("Autarquia", "COPASA"))
+
+dados21_long <- dados21 %>%
+  pivot_longer(
+    cols = c(`score universalidade`, `score sustentabilidade`),
+    names_to = "score_tipo",
+    values_to = "valor"
+  )
+
+ggplot(dados21_long, aes(
+  x = prestador2,
+  y = valor,
+  fill = score_tipo
+)) +
+  geom_boxplot() +
+  scale_fill_manual(
+    values = c(
+      "score universalidade" = "orange",
+      "score sustentabilidade" = "lightblue"
+    ),
+    labels = c(
+      "score universalidade" = "Universalidade",
+      "score sustentabilidade" = "Sustentabilidade"
+    )
+  ) +
+  labs(
+    x = "Prestador",
+    y = "Valor do Score",
+    fill = "Dimensão",
+    title = "Distribuição dos Scores de Universalidade e Sustentabilidade (2021)"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
 
 ```{r}
 plot_boxplot(dados2021, var = "score sustentabilidade", group = "prestador2", titulo = "Score Sustentabilidade por Tipo de Prestador 2021")
